@@ -29,7 +29,7 @@ class Property {
    * @param {designSet=} designSet  The design data to use for this property
    * @return {Property}             The created iCalendar property
    */
-  static fromString(str, designSet) {
+  static fromString(str: string, designSet?: import("./types").DesignSet): Property {
     return new Property(ICALParse.property(str, designSet));
   }
 
@@ -51,7 +51,7 @@ class Property {
    * @param {Array|String} jCal         Raw jCal representation OR the new name of the property
    * @param {Component=} parent         Parent component
    */
-  constructor(jCal, parent) {
+  constructor(jCal: any[] | string, parent?: import("./component").default | null) {
     this._parent = parent || null;
 
     if (typeof(jCal) === 'string') {
@@ -116,7 +116,7 @@ class Property {
    *
    * @private
    */
-  _updateType() {
+  _updateType(): void {
     let designSet = this._designSet;
 
     if (this.type in designSet.value) {
@@ -141,7 +141,7 @@ class Property {
    * @param {Number} index        The index of the value to hydrate
    * @return {?Object}             The decorated value.
    */
-  _hydrateValue(index) {
+  _hydrateValue(index: number): any {
     if (this._values && this._values[index]) {
       return this._values[index];
     }
@@ -171,7 +171,7 @@ class Property {
    * @param {?} value         The value to decorate
    * @return {Object}         The decorated value
    */
-  _decorate(value) {
+  _decorate(value: any): any {
     return this._designSet.value[this.type].decorate(value, this);
   }
 
@@ -182,7 +182,7 @@ class Property {
    * @param {Object} value         The value to undecorate
    * @return {?}                   The undecorated value
    */
-  _undecorate(value) {
+  _undecorate(value: any): any {
     return this._designSet.value[this.type].undecorate(value, this);
   }
 
@@ -194,7 +194,7 @@ class Property {
    * @param {?} value             The value to set
    * @param {Number} index        The index to set it at
    */
-  _setDecoratedValue(value, index) {
+  _setDecoratedValue(value: any, index: number): void {
     if (!this._values) {
       this._values = [];
     }
@@ -216,7 +216,7 @@ class Property {
    * @param {String}        name   Parameter name (lowercase)
    * @return {Array|String}        Parameter value
    */
-  getParameter(name) {
+  getParameter(name: string): string | string[] | undefined {
     if (name in this.jCal[PROP_INDEX]) {
       return this.jCal[PROP_INDEX][name];
     } else {
@@ -230,7 +230,7 @@ class Property {
    * @param {String}        name   Parameter name (lowercase)
    * @return {String}        Parameter value
    */
-  getFirstParameter(name) {
+  getFirstParameter(name: string): string | undefined {
     let parameters = this.getParameter(name);
 
     if (Array.isArray(parameters)) {
@@ -246,7 +246,7 @@ class Property {
    * @param {String}       name     The parameter name
    * @param {Array|String} value    The parameter value
    */
-  setParameter(name, value) {
+  setParameter(name: string, value: string | string[]): void {
     let lcname = name.toLowerCase();
     if (typeof value === "string" &&
         lcname in this._designSet.param &&
@@ -261,7 +261,7 @@ class Property {
    *
    * @param {String} name     The parameter name
    */
-  removeParameter(name) {
+  removeParameter(name: string): void {
     delete this.jCal[PROP_INDEX][name];
   }
 
@@ -270,7 +270,7 @@ class Property {
    *
    * @return {String}     The default type for this property
    */
-  getDefaultType() {
+  getDefaultType(): string {
     let name = this.jCal[NAME_INDEX];
     let designSet = this._designSet;
 
@@ -289,7 +289,7 @@ class Property {
    *
    * @param {String} type     New iCAL type (see design.*.values)
    */
-  resetType(type) {
+  resetType(type: string): void {
     this.removeAllValues();
     this.jCal[TYPE_INDEX] = type;
     this._updateType();
@@ -301,7 +301,7 @@ class Property {
    * @return {Binary | Duration | Period |
    * Recur | Time | UtcOffset | Geo | string | null}         First property value
    */
-  getFirstValue() {
+  getFirstValue(): any {
     return this._hydrateValue(0);
   }
 
@@ -312,7 +312,7 @@ class Property {
    *
    * @return {Array}          List of values
    */
-  getValues() {
+  getValues(): any[] {
     let len = this.jCal.length - VALUE_INDEX;
 
     if (len < 1) {
@@ -333,7 +333,7 @@ class Property {
   /**
    * Removes all values from this property
    */
-  removeAllValues() {
+  removeAllValues(): void {
     if (this._values) {
       this._values.length = 0;
     }
@@ -346,7 +346,7 @@ class Property {
    *
    * @param {Array} values    An array of values
    */
-  setValues(values) {
+  setValues(values: any[]): void {
     if (!this.isMultiValue) {
       throw new Error(
         this.name + ': does not not support mulitValue.\n' +
@@ -381,7 +381,7 @@ class Property {
    *
    * @param {String|Object} value     New property value.
    */
-  setValue(value) {
+  setValue(value: any): void {
     this.removeAllValues();
     if (typeof(value) === 'object' && 'icaltype' in value) {
       this.resetType(value.icaltype);
@@ -399,7 +399,7 @@ class Property {
    * is a live jCal object and should be cloned if modified.
    * @return {Object}
    */
-  toJSON() {
+  toJSON(): any[] {
     return this.jCal;
   }
 
@@ -407,7 +407,7 @@ class Property {
    * The string representation of this component.
    * @return {String}
    */
-  toICALString() {
+  toICALString(): string {
     return ICALStringify.property(
       this.jCal, this._designSet, true
     );

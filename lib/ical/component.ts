@@ -30,7 +30,7 @@ class Component {
    *
    * @param {String} str        The iCalendar string to parse
    */
-  static fromString(str) {
+  static fromString(str: string): Component {
     return new Component(ICALParse.component(str));
   }
 
@@ -41,7 +41,7 @@ class Component {
    *                                      component
    * @param {Component=} parent     Parent component to associate
    */
-  constructor(jCal, parent) {
+  constructor(jCal: any[] | string, parent?: Component | null) {
     if (typeof(jCal) === 'string') {
       // jCal spec (name, properties, components)
       jCal = [jCal, [], []];
@@ -67,7 +67,7 @@ class Component {
    * @type {Number}
    * @private
    */
-  _hydratedPropertyCount = 0;
+  _hydratedPropertyCount: number = 0;
 
   /**
    * The same count as for _hydratedPropertyCount, but for subcomponents
@@ -75,7 +75,7 @@ class Component {
    * @type {Number}
    * @private
    */
-  _hydratedComponentCount = 0;
+  _hydratedComponentCount: number = 0;
 
   /**
    * A cache of hydrated time zone objects which may be used by consumers, keyed
@@ -84,17 +84,17 @@ class Component {
    * @type {Map}
    * @private
    */
-  _timezoneCache = null;
+  _timezoneCache: Map<string, import("./timezone").default> | null = null;
 
   /**
    * @private
    */
-  _components = null;
+  _components: (Component | undefined)[] | null = null;
 
   /**
    * @private
    */
-  _properties = null;
+  _properties: (import("./property").default | undefined)[] | null = null;
 
   /**
    * The name of this component
@@ -130,7 +130,7 @@ class Component {
   /**
    * @private
    */
-  _hydrateComponent(index) {
+  _hydrateComponent(index: number): Component {
     if (!this._components) {
       this._components = [];
       this._hydratedComponentCount = 0;
@@ -152,7 +152,7 @@ class Component {
   /**
    * @private
    */
-  _hydrateProperty(index) {
+  _hydrateProperty(index: number): import("./property").default {
     if (!this._properties) {
       this._properties = [];
       this._hydratedPropertyCount = 0;
@@ -177,7 +177,7 @@ class Component {
    * @param {String=} name        Optional name to filter by
    * @return {?Component}     The found subcomponent
    */
-  getFirstSubcomponent(name) {
+  getFirstSubcomponent(name?: string): Component | null {
     if (name) {
       let i = 0;
       let comps = this.jCal[COMPONENT_INDEX];
@@ -205,7 +205,7 @@ class Component {
    * @param {String=} name            Optional name to filter by
    * @return {Component[]}       The found sub components
    */
-  getAllSubcomponents(name) {
+  getAllSubcomponents(name?: string): Component[] {
     let jCalLen = this.jCal[COMPONENT_INDEX].length;
     let i = 0;
 
@@ -239,7 +239,7 @@ class Component {
    * @param {String} name     The property name
    * @return {Boolean}        True, when property is found
    */
-  hasProperty(name) {
+  hasProperty(name: string): boolean {
     let props = this.jCal[PROPERTY_INDEX];
     let len = props.length;
 
@@ -260,7 +260,7 @@ class Component {
    * @param {String=} name        Lowercase property name
    * @return {?Property}     The found property
    */
-  getFirstProperty(name) {
+  getFirstProperty(name?: string): import("./property").default | null {
     if (name) {
       let i = 0;
       let props = this.jCal[PROPERTY_INDEX];
@@ -288,7 +288,7 @@ class Component {
    * @return {Binary | Duration | Period |
    * Recur | Time | UtcOffset | Geo | string | null}         The found property value.
    */
-  getFirstPropertyValue(name) {
+  getFirstPropertyValue(name?: string): any {
     let prop = this.getFirstProperty(name);
     if (prop) {
       return prop.getFirstValue();
@@ -303,7 +303,7 @@ class Component {
    * @param {String=} name        Lowercase property name
    * @return {Property[]}    List of properties
    */
-  getAllProperties(name) {
+  getAllProperties(name?: string): import("./property").default[] {
     let jCalLen = this.jCal[PROPERTY_INDEX].length;
     let i = 0;
 
@@ -334,7 +334,7 @@ class Component {
   /**
    * @private
    */
-  _removeObjectByIndex(jCalIndex, cache, index) {
+  _removeObjectByIndex(jCalIndex: number, cache: any[], index: number): void {
     cache = cache || [];
     // remove cached version
     if (cache[index]) {
@@ -353,7 +353,7 @@ class Component {
   /**
    * @private
    */
-  _removeObject(jCalIndex, cache, nameOrObject) {
+  _removeObject(jCalIndex: number, cache: string, nameOrObject: string | any): boolean {
     let i = 0;
     let objects = this.jCal[jCalIndex];
     let len = objects.length;
@@ -381,7 +381,7 @@ class Component {
   /**
    * @private
    */
-  _removeAllObjects(jCalIndex, cache, name) {
+  _removeAllObjects(jCalIndex: number, cache: string, name?: string): void {
     let cached = this[cache];
 
     // Unfortunately we have to run through all children to reset their
@@ -404,7 +404,7 @@ class Component {
    * @param {Component} component        The component to add
    * @return {Component}                 The passed in component
    */
-  addSubcomponent(component) {
+  addSubcomponent(component: Component): Component {
     if (!this._components) {
       this._components = [];
       this._hydratedComponentCount = 0;
@@ -428,7 +428,7 @@ class Component {
    * @param {Component|String} nameOrComp    Name of component, or component
    * @return {Boolean}                            True when comp is removed
    */
-  removeSubcomponent(nameOrComp) {
+  removeSubcomponent(nameOrComp: Component | string): boolean {
     let removed = this._removeObject(COMPONENT_INDEX, '_components', nameOrComp);
     if (removed) {
       this._hydratedComponentCount--;
@@ -442,7 +442,7 @@ class Component {
    *
    * @param {String=} name            Lowercase component name
    */
-  removeAllSubcomponents(name) {
+  removeAllSubcomponents(name?: string): any {
     let removed = this._removeAllObjects(COMPONENT_INDEX, '_components', name);
     this._hydratedComponentCount = 0;
     return removed;
@@ -454,7 +454,7 @@ class Component {
    * @param {Property} property      The property to add
    * @return {Property}              The passed in property
    */
-  addProperty(property) {
+  addProperty(property: import("./property").default): import("./property").default {
     if (!(property instanceof Property)) {
       throw new TypeError('must be instance of ICAL.Property');
     }
@@ -482,7 +482,7 @@ class Component {
    * @param {String|Number|Object} value        Property value
    * @return {Property}                    The created property
    */
-  addPropertyWithValue(name, value) {
+  addPropertyWithValue(name: string, value: any): import("./property").default {
     let prop = new Property(name);
     prop.setValue(value);
 
@@ -500,7 +500,7 @@ class Component {
    * @param {String|Number|Object} value        Property value
    * @return {Property}                    The created property
    */
-  updatePropertyWithValue(name, value) {
+  updatePropertyWithValue(name: string, value: any): import("./property").default {
     let prop = this.getFirstProperty(name);
 
     if (prop) {
@@ -519,7 +519,7 @@ class Component {
    * @param {String|Property} nameOrProp     Property name or instance to remove
    * @return {Boolean}                            True, when deleted
    */
-  removeProperty(nameOrProp) {
+  removeProperty(nameOrProp: import("./property").default | string): boolean {
     let removed = this._removeObject(PROPERTY_INDEX, '_properties', nameOrProp);
     if (removed) {
       this._hydratedPropertyCount--;
@@ -534,7 +534,7 @@ class Component {
    * @param {String=} name        Lowercase property name
    * @return {Boolean}            True, when deleted
    */
-  removeAllProperties(name) {
+  removeAllProperties(name?: string): any {
     let removed = this._removeAllObjects(PROPERTY_INDEX, '_properties', name);
     this._hydratedPropertyCount = 0;
     return removed;
@@ -545,7 +545,7 @@ class Component {
    * is a live jCal object and should be cloned if modified.
    * @return {Object}
    */
-  toJSON() {
+  toJSON(): any[] {
     return this.jCal;
   }
 
@@ -553,7 +553,7 @@ class Component {
    * The string representation of this component.
    * @return {String}
    */
-  toString() {
+  toString(): string {
     return stringify.component(
       this.jCal, this._designSet
     );
@@ -567,7 +567,7 @@ class Component {
    * @param {String} tzid     The ID of the time zone to retrieve
    * @return {Timezone}  The time zone corresponding to the ID, or null
    */
-  getTimeZoneByID(tzid) {
+  getTimeZoneByID(tzid: string): import("./timezone").default | null {
     // VTIMEZONE components can only appear as a child of the VCALENDAR
     // component; walk the tree if we're not the root.
     if (this.parent) {
