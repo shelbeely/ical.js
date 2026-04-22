@@ -40,7 +40,7 @@ class Recur {
    * @param {String} string         The string to parse
    * @return {Recur}                The created recurrence instance
    */
-  static fromString(string) {
+  static fromString(string: string): Recur {
     let data = this._stringToData(string, false);
     return new Recur(data);
   }
@@ -65,7 +65,7 @@ class Recur {
    * @param {Array.<Number>=} aData.bymonth             The month for the BYMONTH part
    * @param {Array.<Number>=} aData.bysetpos            The positionals for the BYSETPOS part
    */
-  static fromData(aData) {
+  static fromData(aData: any): Recur {
     return new Recur(aData);
   }
 
@@ -79,7 +79,7 @@ class Recur {
    *                              iCalendar string
    * @return {Recur}            The recurrence instance
    */
-  static _stringToData(string, fmtIcal) {
+  static _stringToData(string: string, fmtIcal: boolean): Record<string, any> {
     let dict = Object.create(null);
 
     // split is slower in FF but fast enough.
@@ -124,7 +124,7 @@ class Recur {
    *        The week start weekday, defaults to SUNDAY
    * @return {Number}           Numeric value of given day
    */
-  static icalDayToNumericDay(string, aWeekStart) {
+  static icalDayToNumericDay(string: string, aWeekStart?: number): number {
     //XXX: this is here so we can deal
     //     with possibly invalid string values.
     let firstDow = aWeekStart || Time.SUNDAY;
@@ -139,7 +139,7 @@ class Recur {
    *        The week start weekday, defaults to SUNDAY
    * @return {String}           The ICAL day value, e.g SU,MO,...
    */
-  static numericDayToIcalDay(num, aWeekStart) {
+  static numericDayToIcalDay(num: number, aWeekStart?: number): string {
     //XXX: this is here so we can deal with possibly invalid number values.
     //     Also, this allows consistent mapping between day numbers and day
     //     names for external users.
@@ -170,7 +170,9 @@ class Recur {
    * @param {Array.<Number>=} data.bymonth              The month for the BYMONTH part
    * @param {Array.<Number>=} data.bysetpos             The positionals for the BYSETPOS part
    */
-  constructor(data) {
+  wrappedJSObject!: this;
+
+  constructor(data?: any) {
     this.wrappedJSObject = this;
     this.parts = {};
 
@@ -198,13 +200,13 @@ class Recur {
    * An object holding the BY-parts of the recurrence rule
    * @type {byParts}
    */
-  parts = null;
+  parts: Record<string, any> | null = null;
 
   /**
    * The interval value for the recurrence rule.
    * @type {Number}
    */
-  interval = 1;
+  interval: number = 1;
 
   /**
    * The week start day
@@ -212,25 +214,25 @@ class Recur {
    * @type {weekDay}
    * @default ICAL.Time.MONDAY
    */
-  wkst = Time.MONDAY;
+  wkst: number = Time.MONDAY;
 
   /**
    * The end of the recurrence
    * @type {?Time}
    */
-  until = null;
+  until: import("./time").default | null = null;
 
   /**
    * The maximum number of occurrences
    * @type {?Number}
    */
-  count = null;
+  count: number | null = null;
 
   /**
    * The frequency value.
    * @type {frequencyValues}
    */
-  freq = null;
+  freq: string | null = null;
 
   /**
    * The class identifier.
@@ -238,7 +240,7 @@ class Recur {
    * @type {String}
    * @default "icalrecur"
    */
-  icalclass = "icalrecur";
+  icalclass: string = "icalrecur";
 
   /**
    * The type name, to be used in the jCal object.
@@ -246,7 +248,7 @@ class Recur {
    * @type {String}
    * @default "recur"
    */
-  icaltype = "recur";
+  icaltype: string = "recur";
 
   /**
    * Create a new iterator for this recurrence rule. The passed start date
@@ -267,7 +269,7 @@ class Recur {
    * @param {Time} aStart        The item's start date
    * @return {RecurIterator}     The recurrence iterator
    */
-  iterator(aStart) {
+  iterator(aStart: import("./time").default): import("./recur_iterator").default {
     return new RecurIterator({
       rule: this,
       dtstart: aStart
@@ -279,7 +281,7 @@ class Recur {
    *
    * @return {Recur}      The cloned object
    */
-  clone() {
+  clone(): Recur {
     return new Recur(this.toJSON());
   }
 
@@ -288,7 +290,7 @@ class Recur {
    *
    * @return {Boolean}        True, if the rule is finite
    */
-  isFinite() {
+  isFinite(): boolean {
     return !!(this.count || this.until);
   }
 
@@ -298,7 +300,7 @@ class Recur {
    *
    * @return {Boolean}        True, if the rule is by count
    */
-  isByCount() {
+  isByCount(): boolean {
     return !!(this.count && !this.until);
   }
 
@@ -310,7 +312,7 @@ class Recur {
    * @param {String} aType            The name of the component part
    * @param {Array|String} aValue     The component value
    */
-  addComponent(aType, aValue) {
+  addComponent(aType: string, aValue: any): void {
     let ucname = aType.toUpperCase();
     if (ucname in this.parts) {
       this.parts[ucname].push(aValue);
@@ -325,7 +327,7 @@ class Recur {
    * @param {String} aType        The component part name
    * @param {Array} aValues       The component values
    */
-  setComponent(aType, aValues) {
+  setComponent(aType: string, aValues: any[]): void {
     this.parts[aType.toUpperCase()] = aValues.slice();
   }
 
@@ -335,7 +337,7 @@ class Recur {
    * @param {String} aType        The component part name
    * @return {Array}              The component part value
    */
-  getComponent(aType) {
+  getComponent(aType: string): any[] {
     let ucname = aType.toUpperCase();
     return (ucname in this.parts ? this.parts[ucname].slice() : []);
   }
@@ -354,7 +356,7 @@ class Recur {
    * @param {Time} aRecurrenceId     The date of the last occurrence
    * @return {Time}                  The next occurrence after
    */
-  getNextOccurrence(aStartTime, aRecurrenceId) {
+  getNextOccurrence(aStartTime: import("./time").default, aRecurrenceId: import("./time").default): import("./time").default | null {
     let iter = this.iterator(aStartTime);
     let next;
 
@@ -388,7 +390,7 @@ class Recur {
    * @param {Array.<Number>=} data.bymonth              The month for the BYMONTH part
    * @param {Array.<Number>=} data.bysetpos             The positionals for the BYSETPOS part
    */
-  fromData(data) {
+  fromData(data: any): void {
     for (let key in data) {
       let uckey = key.toUpperCase();
 
@@ -420,7 +422,7 @@ class Recur {
    * The jCal representation of this recurrence type.
    * @return {Object}
    */
-  toJSON() {
+  toJSON(): Record<string, any> {
     let res = Object.create(null);
     res.freq = this.freq;
 
@@ -453,7 +455,7 @@ class Recur {
    * The string representation of this recurrence rule.
    * @return {String}
    */
-  toString() {
+  toString(): string {
     // TODO retain order
     let str = "FREQ=" + this.freq;
     if (this.count) {
@@ -476,7 +478,7 @@ class Recur {
 }
 export default Recur;
 
-function parseNumericValue(type, min, max, value) {
+function parseNumericValue(type: string, min: number | undefined, max: number | undefined, value: string): number {
   let result = value;
 
   if (value[0] === '+') {

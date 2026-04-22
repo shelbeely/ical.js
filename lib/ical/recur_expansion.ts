@@ -63,7 +63,7 @@ class RecurExpansion {
    * @param {Component=} options.component
    *        Component for expansion, required if not resuming.
    */
-  constructor(options) {
+  constructor(options: any) {
     this.ruleDates = [];
     this.exDates = [];
     this.fromData(options);
@@ -73,7 +73,7 @@ class RecurExpansion {
    * True when iteration is fully completed.
    * @type {Boolean}
    */
-  complete = false;
+  complete: boolean = false;
 
   /**
    * Array of rrule iterators.
@@ -81,7 +81,7 @@ class RecurExpansion {
    * @type {RecurIterator[]}
    * @private
    */
-  ruleIterators = null;
+  ruleIterators: import("./recur_iterator").default[] | null = null;
 
   /**
    * Array of rdate instances.
@@ -89,7 +89,7 @@ class RecurExpansion {
    * @type {Time[]}
    * @private
    */
-  ruleDates = null;
+  ruleDates: import("./time").default[] | null = null;
 
   /**
    * Array of exdate instances.
@@ -97,21 +97,21 @@ class RecurExpansion {
    * @type {Time[]}
    * @private
    */
-  exDates = null;
+  exDates: import("./time").default[] | null = null;
 
   /**
    * Current position in ruleDates array.
    * @type {Number}
    * @private
    */
-  ruleDateInc = 0;
+  ruleDateInc: number = 0;
 
   /**
    * Current position in exDates array
    * @type {Number}
    * @private
    */
-  exDateInc = 0;
+  exDateInc: number = 0;
 
   /**
    * Current negative date.
@@ -119,7 +119,7 @@ class RecurExpansion {
    * @type {Time}
    * @private
    */
-  exDate = null;
+  exDate: import("./time").default | null = null;
 
   /**
    * Current additional date.
@@ -127,21 +127,21 @@ class RecurExpansion {
    * @type {Time}
    * @private
    */
-  ruleDate = null;
+  ruleDate: import("./time").default | null = null;
 
   /**
    * Start date of recurring rules.
    *
    * @type {Time}
    */
-  dtstart = null;
+  dtstart: import("./time").default | null = null;
 
   /**
    * Last expanded time
    *
    * @type {Time}
    */
-  last = null;
+  last: import("./time").default | null = null;
 
   /**
    * Initialize the recurrence expansion from the data object. The options
@@ -155,7 +155,7 @@ class RecurExpansion {
    * @param {Component=} options.component
    *        Component for expansion, required if not resuming.
    */
-  fromData(options) {
+  fromData(options: any): void {
     let start = formatClassType(options.dtstart, Time);
 
     if (!start) {
@@ -204,7 +204,7 @@ class RecurExpansion {
    * @param {Time} a   The one object to compare
    * @param {Time} b   The other object to compare
    */
-  _compare_special(a, b) {
+  _compare_special(a: import("./time").default, b: import("./time").default): number {
     if (!a.isDate && b.isDate)
       return new Time({ year: a.year, month: a.month, day: a.day }).compare(b);
     return a.compare(b);
@@ -214,7 +214,7 @@ class RecurExpansion {
    * Retrieve the next occurrence in the series.
    * @return {Time}
    */
-  next() {
+  next(): import("./time").default | null | undefined {
     let iter;
     let next;
     let compare;
@@ -288,7 +288,7 @@ class RecurExpansion {
    * back into the expansion to resume iteration.
    * @return {Object}
    */
-  toJSON() {
+  toJSON(): Record<string, any> {
     function toJSON(item) {
       return item.toJSON();
     }
@@ -322,7 +322,7 @@ class RecurExpansion {
    * @param {String} propertyName             The property name to search for
    * @return {Time[]}                         The extracted dates.
    */
-  _extractDates(component, propertyName) {
+  _extractDates(component: import("./component").default, propertyName: string): import("./time").default[] {
     let result = [];
     let props = component.getAllProperties(propertyName);
 
@@ -348,7 +348,7 @@ class RecurExpansion {
    * @private
    * @param {Component} component    The component to initialize from.
    */
-  _init(component) {
+  _init(component: import("./component").default): void {
     this.ruleIterators = [];
 
     this.last = this.dtstart.clone();
@@ -426,7 +426,7 @@ class RecurExpansion {
    * Advance to the next exdate
    * @private
    */
-  _nextExDay() {
+  _nextExDay(): void {
     this.exDate = this.exDates[++this.exDateInc];
   }
 
@@ -434,7 +434,7 @@ class RecurExpansion {
    * Advance to the next rule date
    * @private
    */
-  _nextRuleDay() {
+  _nextRuleDay(): void {
     this.ruleDate = this.ruleDates[++this.ruleDateInc];
   }
 
@@ -445,7 +445,7 @@ class RecurExpansion {
    * @private
    * @return {?RecurIterator}    Found iterator.
    */
-  _nextRecurrenceIter() {
+  _nextRecurrenceIter(): import("./recur_iterator").default | null | undefined {
     let iters = this.ruleIterators;
 
     if (iters.length === 0) {

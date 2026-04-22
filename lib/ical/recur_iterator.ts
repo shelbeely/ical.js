@@ -54,7 +54,7 @@ class RecurIterator {
    *        from a previously constructed iterator. Initialization will not be
    *        repeated.
    */
-  constructor(options) {
+  constructor(options: any) {
     this.fromData(options);
   }
 
@@ -62,39 +62,39 @@ class RecurIterator {
    * True when iteration is finished.
    * @type {Boolean}
    */
-  completed = false;
+  completed: boolean = false;
 
   /**
    * The rule that is being iterated
    * @type {Recur}
    */
-  rule = null;
+  rule: import("./recur").default | null = null;
 
   /**
    * The start date of the event being iterated.
    * @type {Time}
    */
-  dtstart = null;
+  dtstart: import("./time").default | null = null;
 
   /**
    * The last occurrence that was returned from the
    * {@link RecurIterator#next} method.
    * @type {Time}
    */
-  last = null;
+  last: import("./time").default | null = null;
 
   /**
    * The sequence number from the occurrence
    * @type {Number}
    */
-  occurrence_number = 0;
+  occurrence_number: number = 0;
 
   /**
    * The indices used for the {@link ICAL.RecurIterator#by_data} object.
    * @type {Object}
    * @private
    */
-  by_indices = null;
+  by_indices: Record<string, number> | null = null;
 
   /**
    * If true, the iterator has already been initialized
@@ -136,7 +136,7 @@ class RecurIterator {
    *        from a previously constructed iterator. Initialization will not be
    *        repeated.
    */
-  fromData(options) {
+  fromData(options: any): void {
     this.rule = formatClassType(options.rule, Recur);
 
     if (!this.rule) {
@@ -375,7 +375,7 @@ class RecurIterator {
    * Retrieve the next occurrence from the iterator.
    * @return {Time}
    */
-  next(again = false) {
+  next(again = false): import("./time").default | null {
     let before = (this.last ? this.last.clone() : null);
 
     if ((this.rule.count && this.occurrence_number >= this.rule.count) ||
@@ -1442,7 +1442,7 @@ class RecurIterator {
    * rule.
    * @return {Object}
    */
-  toJSON() {
+  toJSON(): Record<string, any> {
     let result = Object.create(null);
 
     result.initialized = this.initialized;
