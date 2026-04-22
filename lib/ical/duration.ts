@@ -22,7 +22,7 @@ class Duration {
    * @return {Duration}             The newly created duration instance
    */
   static fromSeconds(aSeconds: number): Duration {
-    return (new Duration()).fromSeconds(aSeconds: number): Duration;
+    return (new Duration()).fromSeconds(aSeconds);
   }
 
   /**
@@ -249,8 +249,8 @@ class Duration {
    * @return {Number}                     -1, 0 or 1 for less/equal/greater
    */
   compare(aOther: Duration): number {
-    let thisSeconds = this.toSeconds(): number;
-    let otherSeconds = aOther.toSeconds(): number;
+    let thisSeconds = this.toSeconds();
+    let otherSeconds = aOther.toSeconds();
     return (thisSeconds > otherSeconds) - (thisSeconds < otherSeconds);
   }
 
@@ -259,7 +259,7 @@ class Duration {
    * of 61 seconds will be normalized to 1 minute and 1 second.
    */
   normalize(): void {
-    this.fromSeconds(this.toSeconds(): number);
+    this.fromSeconds(this.toSeconds());
   }
 
   /**
@@ -267,7 +267,7 @@ class Duration {
    * @return {String}
    */
   toString(): string {
-    if (this.toSeconds(): number == 0) {
+    if (this.toSeconds() == 0) {
       return "PT0S";
     } else {
       let str = "";

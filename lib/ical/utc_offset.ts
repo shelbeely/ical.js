@@ -39,7 +39,7 @@ class UtcOffset {
    */
   static fromSeconds(aSeconds: number): UtcOffset {
     let instance = new UtcOffset();
-    instance.fromSeconds(aSeconds: number): this;
+    instance.fromSeconds(aSeconds);
     return instance;
   }
 
@@ -52,7 +52,7 @@ class UtcOffset {
    * @param {Number=} aData.factor  The factor for the utc-offset, either -1 or 1
    */
   constructor(aData?: any) {
-    this.fromData(aData?: any): void;
+    this.fromData(aData);
   }
 
   /**
@@ -88,7 +88,7 @@ class UtcOffset {
    * @return {UtcOffset}     The cloned object
    */
   clone(): UtcOffset {
-    return UtcOffset.fromSeconds(this.toSeconds(): number);
+    return UtcOffset.fromSeconds(this.toSeconds());
   }
 
   /**
@@ -105,7 +105,7 @@ class UtcOffset {
         this[key] = value;
       }
     }
-    this._normalize(): void;
+    this._normalize();
   }
 
   /**
@@ -142,14 +142,14 @@ class UtcOffset {
    * @return {Number}                     -1, 0 or 1 for less/equal/greater
    */
   compare(other: UtcOffset): number {
-    let a = this.toSeconds(): number;
-    let b = other.toSeconds(): number;
+    let a = this.toSeconds();
+    let b = other.toSeconds();
     return (a > b) - (b > a);
   }
 
   _normalize(): void {
     // Range: 97200 seconds (with 1 hour inbetween)
-    let secs = this.toSeconds(): number;
+    let secs = this.toSeconds();
     let factor = this.factor;
     while (secs < -43200) { // = UTC-12:00
       secs += 97200;
