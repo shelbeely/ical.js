@@ -29,7 +29,7 @@ const RFC6868_REPLACE_MAP = { "^'": '"', "^n": "\n", "^^": "^" };
  * @return {Object|Object[]}  A single jCal object, or an array thereof
  */
 export default function parse(input: string): any {
-  let state = {};
+  let state: any = {};
   let root = state.component = [];
 
   state.stack = [root];
@@ -124,7 +124,7 @@ parse._handleContentLine = function(line: string, state: any): void {
   // params is only overridden if paramPos !== -1.
   // we can't do params = params || {} later on
   // because it sacrifices ops.
-  let params = {};
+  let params: any = {};
 
   /**
    * Different property cases
@@ -297,7 +297,7 @@ parse._handleContentLine = function(line: string, state: any): void {
  * @param {Object} designSet      The design data to use for this value
  * @return {Object} varies on type
  */
-parse._parseValue = function(value: string, type: string, designSet: any, structuredValue: any): any {
+parse._parseValue = function(value: string, type: string, designSet: any, structuredValue?: any): any {
   if (type in designSet.value && 'fromICAL' in designSet.value[type]) {
     return designSet.value[type].fromICAL(value, structuredValue);
   }
@@ -329,7 +329,7 @@ parse._parseParameters = function(line: string, start: number, designSet: any): 
   // check if " is used if so get value from "->"
   // then increment pos to find next ;
 
-  while ((pos !== false) &&
+  while ((pos as any !== false) &&
          (pos = line.indexOf(delim, pos + 1)) !== -1) {
 
     name = line.slice(lastParam + 1, pos);

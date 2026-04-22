@@ -102,6 +102,8 @@ class Duration {
    * @type {Number}
    * @default 0
    */
+  wrappedJSObject: Duration | null = null;
+
   weeks = 0;
 
   /**
@@ -251,7 +253,7 @@ class Duration {
   compare(aOther: Duration): number {
     let thisSeconds = this.toSeconds();
     let otherSeconds = aOther.toSeconds();
-    return (thisSeconds > otherSeconds) - (thisSeconds < otherSeconds);
+    return (thisSeconds > otherSeconds ? 1 : 0) - (thisSeconds < otherSeconds ? 1 : 0);
   }
 
   /**

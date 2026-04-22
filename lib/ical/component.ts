@@ -57,6 +57,9 @@ class Component {
     }
   }
 
+  jCal: any[];
+  parent: Component | null = null;
+
   /**
    * Hydrated properties are inserted into the _properties array at the same
    * position as in the jCal array, so it is possible that the array contains

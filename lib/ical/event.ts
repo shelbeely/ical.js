@@ -68,12 +68,16 @@ class Event {
 
   static THISANDFUTURE = 'THISANDFUTURE';
 
+  component!: Component;
+  _rangeExceptionCache: Record<string, any> = Object.create(null);
+  rangeExceptions: [number, string][] = [];
+
   /**
    * List of related event exceptions.
    *
    * @type {Event[]}
    */
-  exceptions: Record<string, Event> | null = null;
+  exceptions: Record<string, Event> = Object.create(null);
 
   /**
    * When true, will verify exceptions are related by their UUID.
@@ -195,7 +199,7 @@ class Event {
     let id = occurrence.toString();
     let utcId = occurrence.convertToZone(Timezone.utcTimezone).toString();
     let item;
-    let result = {
+    let result: any = {
       //XXX: Clone?
       recurrenceId: occurrence
     };
@@ -545,6 +549,10 @@ class Event {
    * @return {String}
    */
   toString(): string {
+    return this.component.toString();
+  }
+}
+export default Event;
 
 function compareRangeException(a: [number, ...any[]], b: [number, ...any[]]): number {
   if (a[0] > b[0]) return 1;

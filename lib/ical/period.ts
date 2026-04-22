@@ -31,7 +31,7 @@ class Period {
       );
     }
 
-    let options = {
+    let options: any = {
       start: Time.fromDateTimeString(parts[0], prop)
     };
 

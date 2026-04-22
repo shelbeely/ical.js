@@ -604,7 +604,7 @@ class RecurIterator {
    * @param {Boolean=} isInit     When given true will not increment the
    *                                current day (this.last).
    */
-  _byDayAndMonthDay(isInit) {
+  _byDayAndMonthDay(isInit?: any) {
     let byMonthDay; // setup in initMonth
     let byDay = this.by_data.BYDAY;
 
@@ -940,7 +940,7 @@ class RecurIterator {
    * @param {weekDay=} aWeekStart The week start weekday
    * @return [pos, numericDow] (eg: [1, 3]) numericDow is relative to aWeekStart
    */
-  ruleDayOfWeek(dow, aWeekStart) {
+  ruleDayOfWeek(dow: string, aWeekStart?: any) {
     let matches = dow.match(/([+-]?[0-9])?(MO|TU|WE|TH|FR|SA|SU)/);
     if (matches) {
       let pos = parseInt(matches[1] || 0, 10);
@@ -951,7 +951,7 @@ class RecurIterator {
     }
   }
 
-  next_generic(aRuleType, aInterval, aDateAttr, aFollowingAttr, aPreviousIncr) {
+  next_generic(aRuleType: any, aInterval: any, aDateAttr: any, aFollowingAttr: any, aPreviousIncr?: any) {
     let has_by_rule = (aRuleType in this.by_data);
     let this_freq = (this.rule.freq == aInterval);
     let end_of_data = 0;
