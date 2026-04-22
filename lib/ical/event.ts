@@ -34,7 +34,7 @@ class Event {
    *            specified exceptions will automatically be set in relation of
    *            component's parent
    */
-  constructor(component, options) {
+  constructor(component?: import("./component").default | any, options?: any) {
     if (!(component instanceof Component)) {
       options = component;
       component = null;
@@ -73,14 +73,14 @@ class Event {
    *
    * @type {Event[]}
    */
-  exceptions = null;
+  exceptions: Record<string, Event> | null = null;
 
   /**
    * When true, will verify exceptions are related by their UUID.
    *
    * @type {Boolean}
    */
-  strictExceptions = false;
+  strictExceptions: boolean = false;
 
   /**
    * Relates a given event exception to this object.  If the given component
@@ -92,7 +92,7 @@ class Event {
    *
    * @param {Component|Event} obj       Component or event
    */
-  relateException(obj) {
+  relateException(obj: import("./component").default | Event): void {
     if (this.isRecurrenceException()) {
       throw new Error('cannot relate exception to exceptions');
     }
@@ -136,7 +136,7 @@ class Event {
    *
    * @return {Boolean}        True, when exception is within range
    */
-  modifiesFuture() {
+  modifiesFuture(): boolean {
     if (!this.component.hasProperty('recurrence-id')) {
       return false;
     }
@@ -151,7 +151,7 @@ class Event {
    * @param {Time} time   usually an occurrence time of an event
    * @return {?Event}     the related event/exception or null
    */
-  findRangeException(time) {
+  findRangeException(time: import("./time").default): string | null {
     if (!this.rangeExceptions.length) {
       return null;
     }
@@ -191,7 +191,7 @@ class Event {
    * @param {Time} occurrence               time occurrence
    * @return {occurrenceDetails}            Information about the occurrence
    */
-  getOccurrenceDetails(occurrence) {
+  getOccurrenceDetails(occurrence: import("./time").default): import("./types").OccurrenceDetails {
     let id = occurrence.toString();
     let utcId = occurrence.convertToZone(Timezone.utcTimezone).toString();
     let item;
@@ -270,7 +270,7 @@ class Event {
    * @param {Time=} startTime     Starting point for expansion
    * @return {RecurExpansion}    Expansion object
    */
-  iterator(startTime) {
+  iterator(startTime?: import("./time").default): import("./recur_expansion").default {
     return new RecurExpansion({
       component: this.component,
       dtstart: startTime || this.startDate
@@ -282,7 +282,7 @@ class Event {
    *
    * @return {Boolean}        True, if event is recurring
    */
-  isRecurring() {
+  isRecurring(): boolean {
     let comp = this.component;
     return comp.hasProperty('rrule') || comp.hasProperty('rdate');
   }
@@ -293,7 +293,7 @@ class Event {
    *
    * @return {Boolean}    True, if the event describes a recurrence exception
    */
-  isRecurrenceException() {
+  isRecurrenceException(): boolean {
     return this.component.hasProperty('recurrence-id');
   }
 
@@ -312,7 +312,7 @@ class Event {
    * @return {Object.<frequencyValues, Boolean>}
    *          Object of recurrence flags
    */
-  getRecurrenceTypes() {
+  getRecurrenceTypes(): Record<string, boolean> {
     let rules = this.component.getAllProperties('rrule');
     let i = 0;
     let len = rules.length;
@@ -510,7 +510,7 @@ class Event {
    * @param {String} propName     The property name
    * @param {Time} time           The time to set
    */
-  _setTime(propName, time) {
+  _setTime(propName: string, time: import("./time").default): void {
     let prop = this.component.getFirstProperty(propName);
 
     if (!prop) {
@@ -532,11 +532,11 @@ class Event {
     prop.setValue(time);
   }
 
-  _setProp(name, value) {
+  _setProp(name: string, value: any): void {
     this.component.updatePropertyWithValue(name, value);
   }
 
-  _firstProp(name) {
+  _firstProp(name: string): any {
     return this.component.getFirstPropertyValue(name);
   }
 
@@ -544,13 +544,9 @@ class Event {
    * The string representation of this event.
    * @return {String}
    */
-  toString() {
-    return this.component.toString();
-  }
-}
-export default Event;
+  toString(): string {
 
-function compareRangeException(a, b) {
+function compareRangeException(a: [number, ...any[]], b: [number, ...any[]]): number {
   if (a[0] > b[0]) return 1;
   if (b[0] > a[0]) return -1;
   return 0;

@@ -43,7 +43,7 @@ class ComponentParser {
    * @param {Boolean} options.parseEvent        Whether events should be parsed
    * @param {Boolean} options.parseTimezeone    Whether timezones should be parsed
    */
-  constructor(options) {
+  constructor(options?: { parseEvent?: boolean; parseTimezone?: boolean }) {
     if (typeof(options) === 'undefined') {
       options = {};
     }
@@ -58,14 +58,14 @@ class ComponentParser {
    *
    * @type {Boolean}
    */
-  parseEvent = true;
+  parseEvent: boolean = true;
 
   /**
    * When true, parse timezones
    *
    * @type {Boolean}
    */
-  parseTimezone = true;
+  parseTimezone: boolean = true;
 
 
   /* SAX like events here for reference */
@@ -74,7 +74,7 @@ class ComponentParser {
    * Fired when parsing is complete
    * @callback
    */
-  oncomplete = /* c8 ignore next */ function() {};
+  oncomplete: () => void = /* c8 ignore next */ function() {};
 
   /**
    * Fired if an error occurs during parsing.
@@ -82,7 +82,7 @@ class ComponentParser {
    * @callback
    * @param {Error} err details of error
    */
-  onerror = /* c8 ignore next */ function(err) {};
+  onerror: (err: Error) => void = /* c8 ignore next */ function(err) {};
 
   /**
    * Fired when a top level component (VTIMEZONE) is found
@@ -90,7 +90,7 @@ class ComponentParser {
    * @callback
    * @param {Timezone} component     Timezone object
    */
-  ontimezone = /* c8 ignore next */ function(component) {};
+  ontimezone: (component: import("./timezone").default) => void = /* c8 ignore next */ function(component) {};
 
   /**
    * Fired when a top level component (VEVENT) is found.
@@ -98,7 +98,7 @@ class ComponentParser {
    * @callback
    * @param {Event} component    Top level component
    */
-  onevent = /* c8 ignore next */ function(component) {};
+  onevent: (component: import("./event").default) => void = /* c8 ignore next */ function(component) {};
 
   /**
    * Process a string or parse ical object.  This function itself will return
@@ -109,7 +109,7 @@ class ComponentParser {
    * @param {Component|String|Object} ical      The component to process,
    *        either in its final form, as a jCal Object, or string representation
    */
-  process(ical) {
+  process(ical: import("./component").default | string | any[]): void {
     //TODO: this is sync now in the future we will have a incremental parser.
     if (typeof(ical) === 'string') {
       ical = ICALParse(ical);

@@ -31,7 +31,7 @@ class VCardTime extends Time {
    * @param {String} aIcalType  The type for this instance, e.g. date-and-or-time
    * @return {VCardTime}        The date/time instance
    */
-  static fromDateAndOrTimeString(aValue, aIcalType) {
+  static fromDateAndOrTimeString(aValue: string, aIcalType: string): VCardTime {
     function part(v, s, e) {
       return v ? strictParseInt(v.slice(s, s + e)) : null;
     }
@@ -81,7 +81,7 @@ class VCardTime extends Time {
    * @param {Timezone|UtcOffset} zone               The timezone to use
    * @param {String} icaltype                       The type for this date/time object
    */
-  constructor(data, zone, icaltype) {
+  constructor(data: any, zone: any, icaltype?: string) {
     super(data, zone);
     this._icaltype = icaltype || "date-and-or-time";
   }

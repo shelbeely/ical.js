@@ -21,7 +21,7 @@ const TO_ICAL_NEWLINE = /\\|;|,|\n/g;
 const FROM_VCARD_NEWLINE = /\\\\|\\,|\\[Nn]/g;
 const TO_VCARD_NEWLINE = /\\|,|\n/g;
 
-function createTextType(fromNewline, toNewline) {
+function createTextType(fromNewline: RegExp, toNewline: RegExp): any {
   let result = {
     matches: /.*/,
 
@@ -65,7 +65,7 @@ const DEFAULT_TYPE_UTCOFFSET = { defaultType: "utc-offset" };
 const DEFAULT_TYPE_RECUR = { defaultType: "recur" };
 const DEFAULT_TYPE_DATE_ANDOR_TIME = { defaultType: "date-and-or-time", allowedTypes: ["date-time", "date", "text"] };
 
-function replaceNewlineReplace(string) {
+function replaceNewlineReplace(string: string): string {
   switch (string) {
     case "\\\\":
       return "\\";
@@ -82,7 +82,7 @@ function replaceNewlineReplace(string) {
   }
 }
 
-function replaceNewline(value, newline, structuredEscape) {
+function replaceNewline(value: string, newline: RegExp, structuredEscape?: any): string {
   // avoid regex when possible.
   if (value.indexOf('\\') === -1) {
     return value;
@@ -1026,7 +1026,7 @@ const design = {
    * @param {String} componentName        The name of the component
    * @return {designSet}      The design set for the component
    */
-  getDesignSet: function(componentName) {
+  getDesignSet: function(componentName: string): import("./types").DesignSet {
     let isInDesign = componentName && componentName in design.components;
     return isInDesign ? design.components[componentName] : design.defaultSet;
   }

@@ -22,7 +22,7 @@ class Period {
    * @param {Property} prop         The property this period will be on
    * @return {Period}               The created period instance
    */
-  static fromString(str, prop) {
+  static fromString(str: string, prop: import("./property").default): Period {
     let parts = str.split('/');
 
     if (parts.length !== 2) {
@@ -56,7 +56,7 @@ class Period {
    * @param {Duration=} aData.duration      The duration of the period
    * @return {Period}                       The period instance
    */
-  static fromData(aData) {
+  static fromData(aData: any): Period {
     return new Period(aData);
   }
 
@@ -70,7 +70,7 @@ class Period {
    * @param {Boolean} aLenient              If true, data value can be both date and date-time
    * @return {Period}                       The period instance
    */
-  static fromJSON(aData, aProp, aLenient) {
+  static fromJSON(aData: [string, string], aProp: import("./property").default, aLenient?: boolean): Period {
     function fromDateOrDateTimeString(aValue, dateProp) {
       if (aLenient) {
         return Time.fromString(aValue, dateProp);
@@ -101,7 +101,7 @@ class Period {
    * @param {Time=} aData.end               The end of the period
    * @param {Duration=} aData.duration      The duration of the period
    */
-  constructor(aData) {
+  constructor(aData?: { start?: import("./time").default; end?: import("./time").default; duration?: import("./duration").default }) {
     this.wrappedJSObject = this;
 
     if (aData && 'start' in aData) {
@@ -131,23 +131,25 @@ class Period {
   }
 
 
+  wrappedJSObject!: this;
+
   /**
    * The start of the period
    * @type {Time}
    */
-  start = null;
+  start: import("./time").default | null = null;
 
   /**
    * The end of the period
    * @type {Time}
    */
-  end = null;
+  end: import("./time").default | null = null;
 
   /**
    * The duration of the period
    * @type {Duration}
    */
-  duration = null;
+  duration: import("./duration").default | null = null;
 
   /**
    * The class identifier.
@@ -155,7 +157,7 @@ class Period {
    * @type {String}
    * @default "icalperiod"
    */
-  icalclass = "icalperiod";
+  icalclass: string = "icalperiod";
 
   /**
    * The type name, to be used in the jCal object.
@@ -163,14 +165,14 @@ class Period {
    * @type {String}
    * @default "period"
    */
-  icaltype = "period";
+  icaltype: string = "period";
 
   /**
    * Returns a clone of the duration object.
    *
    * @return {Period}      The cloned object
    */
-  clone() {
+  clone(): Period {
     return Period.fromData({
       start: this.start ? this.start.clone() : null,
       end: this.end ? this.end.clone() : null,
@@ -184,7 +186,7 @@ class Period {
    *
    * @return {Duration}      The calculated duration
    */
-  getDuration() {
+  getDuration(): import("./duration").default {
     if (this.duration) {
       return this.duration;
     } else {
@@ -198,7 +200,7 @@ class Period {
    *
    * @return {Time}          The calculated end date
    */
-  getEnd() {
+  getEnd(): import("./time").default {
     if (this.end) {
       return this.end;
     } else {
@@ -216,7 +218,7 @@ class Period {
    *
    * @param {Time|Period} dt    The date or other period to compare with
    */
-  compare(dt) {
+  compare(dt: import("./time").default | Period): number {
     if (dt.compare(this.start) < 0) {
       return 1;
     } else if (dt.compare(this.getEnd()) > 0) {
@@ -230,15 +232,14 @@ class Period {
    * The string representation of this period.
    * @return {String}
    */
-  toString() {
-    return this.start + "/" + (this.end || this.duration);
+  toString(): string {
   }
 
   /**
    * The jCal representation of this period type.
    * @return {Object}
    */
-  toJSON() {
+  toJSON(): [string, string] {
     return [this.start.toString(), (this.end || this.duration).toString()];
   }
 
@@ -246,7 +247,7 @@ class Period {
    * The iCalendar string representation of this period.
    * @return {String}
    */
-  toICALString() {
+  toICALString(): string {
     return this.start.toICALString() + "/" +
            (this.end || this.duration).toICALString();
   }
