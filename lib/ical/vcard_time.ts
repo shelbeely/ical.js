@@ -86,6 +86,9 @@ class VCardTime extends Time {
     this._icaltype = icaltype || "date-and-or-time";
   }
 
+  /** @private */
+  private _icaltype: string = "date-and-or-time";
+
   /**
    * The class identifier.
    * @constant

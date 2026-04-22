@@ -96,7 +96,7 @@ class Recur {
 
       if (ucname in partDesign) {
         let partArr = value.split(',');
-        let partSet = new Set();
+        let partSet = new Set<any>();
 
         for (let part of partArr) {
           partSet.add(partDesign[ucname](part));
@@ -479,27 +479,27 @@ class Recur {
 export default Recur;
 
 function parseNumericValue(type: string, min: number | undefined, max: number | undefined, value: string): number {
-  let result = value;
+  let result: string | number = value;
 
   if (value[0] === '+') {
     result = value.slice(1);
   }
 
-  result = strictParseInt(result);
+  result = strictParseInt(result as string);
 
-  if (min !== undefined && value < min) {
+  if (min !== undefined && (result as number) < min) {
     throw new Error(
       type + ': invalid value "' + value + '" must be > ' + min
     );
   }
 
-  if (max !== undefined && value > max) {
+  if (max !== undefined && (result as number) > max) {
     throw new Error(
-      type + ': invalid value "' + value + '" must be < ' + min
+      type + ': invalid value "' + value + '" must be < ' + max
     );
   }
 
-  return result;
+  return result as number;
 }
 
 const optionDesign = {
@@ -520,7 +520,7 @@ const optionDesign = {
     dict.count = strictParseInt(value);
   },
 
-  INTERVAL: function(value, dict, fmtIcal) {
+  INTERVAL: function(value, dict, fmtIcal?) {
     dict.interval = strictParseInt(value);
     if (dict.interval < 1) {
       // 0 or negative values are not allowed, some engines seem to generate

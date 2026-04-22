@@ -358,7 +358,7 @@ function parseDurationChunk(letter: string, number: string, object: any): number
   }
 
   if (type) {
-    if (!number && number !== 0) {
+    if (!number && number !== "0") {
       throw new Error(
         'invalid duration value: Missing number before "' + letter + '"'
       );

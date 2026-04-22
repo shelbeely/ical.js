@@ -445,7 +445,7 @@ class RecurExpansion {
    * @private
    * @return {?RecurIterator}    Found iterator.
    */
-  _nextRecurrenceIter(): import("./recur_iterator").default | null | undefined {
+  _nextRecurrenceIter(_aTime?: import("./time").default): import("./recur_iterator").default | null | undefined {
     let iters = this.ruleIterators;
 
     if (iters.length === 0) {

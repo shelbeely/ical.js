@@ -114,13 +114,14 @@ stringify.property = function(property: any[], designSet?: any, noFold?: boolean
     line = name;
   }
 
-  for (let [paramName, value] of Object.entries(params)) {
+  for (let [paramName, paramValue] of Object.entries(params)) {
     if (designSet.propertyGroups && paramName == 'group') {
       continue;
     }
 
     let paramDesign = designSet.param[paramName];
     let multiValue = paramDesign && paramDesign.multiValue;
+    let value: any = paramValue;
     if (multiValue && Array.isArray(value)) {
       value = value.map(function(val) {
         val = stringify._rfc6868Unescape(val);
@@ -129,8 +130,8 @@ stringify.property = function(property: any[], designSet?: any, noFold?: boolean
       });
       value = stringify.multiValue(value, multiValue, "unknown", null, designSet);
     } else {
-      value = stringify._rfc6868Unescape(value);
-      value = stringify.paramPropertyValue(value);
+      value = stringify._rfc6868Unescape(value as string);
+      value = stringify.paramPropertyValue(value as string);
     }
 
     line += ';' + paramName.toUpperCase() + '=' + value;
@@ -185,15 +186,15 @@ stringify.property = function(property: any[], designSet?: any, noFold?: boolean
 
   if (multiValue && structuredValue) {
     line += stringify.multiValue(
-      property[3], structuredValue, valueType, multiValue, designSet, structuredValue
+      property[3], structuredValue as unknown as string, valueType, multiValue as unknown as string, designSet, structuredValue
     );
   } else if (multiValue) {
     line += stringify.multiValue(
-      property.slice(3), multiValue, valueType, null, designSet, false
+      property.slice(3), multiValue as unknown as string, valueType, null, designSet, false
     );
   } else if (structuredValue) {
     line += stringify.multiValue(
-      property[3], structuredValue, valueType, null, designSet, structuredValue
+      property[3], structuredValue as unknown as string, valueType, null, designSet, structuredValue
     );
   } else {
     line += stringify.value(property[3], valueType, designSet, false);

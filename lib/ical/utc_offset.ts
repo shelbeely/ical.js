@@ -22,7 +22,7 @@ class UtcOffset {
    */
   static fromString(aString: string): UtcOffset {
     // -05:00
-    let options = {};
+    let options: any = {};
     //TODO: support seconds per rfc5545 ?
     options.factor = (aString[0] === '+') ? 1 : -1;
     options.hours = strictParseInt(aString.slice(1, 3));
@@ -144,7 +144,7 @@ class UtcOffset {
   compare(other: UtcOffset): number {
     let a = this.toSeconds();
     let b = other.toSeconds();
-    return (a > b) - (b > a);
+    return ((a > b) ? 1 : 0) - ((b > a) ? 1 : 0);
   }
 
   _normalize(): void {

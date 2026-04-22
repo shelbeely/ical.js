@@ -263,7 +263,7 @@ export function pad2(data: string | number): string {
   if (typeof(data) !== 'string') {
     // handle fractions.
     if (typeof(data) === 'number') {
-      data = parseInt(data);
+      data = parseInt(String(data));
     }
     data = String(data);
   }

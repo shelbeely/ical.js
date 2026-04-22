@@ -20,7 +20,7 @@ const TERSER_OPTIONS = {
 };
 
 export default [{
-  input: 'lib/ical/module.js',
+  input: 'lib/ical/module.ts',
   output: [
     { file: 'dist/ical.js', format: 'es', exports: 'default' },
     {
@@ -30,9 +30,24 @@ export default [{
       exports: 'default',
       plugins: [terser(TERSER_OPTIONS)]
     }
+  ],
+  plugins: [
+    typescript({
+      include: ['lib/ical/*.ts'],
+      noForceEmit: true,
+      compilerOptions: {
+        declaration: true,
+        emitDeclarationOnly: false,
+        declarationMap: true,
+        declarationDir: 'dist/types',
+        outDir: 'dist',
+        target: 'ES2015',
+        skipLibCheck: true,
+      },
+    })
   ]
 }, {
-  input: 'lib/ical/module.js',
+  input: 'lib/ical/module.ts',
   output: [
     {
       file: 'dist/ical.es5.cjs',
@@ -53,15 +68,13 @@ export default [{
   plugins: [
     babel({ babelHelpers: 'bundled', presets: ['@babel/preset-env'] }),
     typescript({
-      include: ['lib/ical/*.js'],
+      include: ['lib/ical/*.ts'],
       noForceEmit: true,
       compilerOptions: {
-        allowJs: true,
-        declaration: true,
-        emitDeclarationOnly: true,
-        declarationMap: true,
-        declarationDir: 'dist/types',
+        declaration: false,
         outDir: 'dist',
+        target: 'ES2015',
+        skipLibCheck: true,
       },
     })
   ]

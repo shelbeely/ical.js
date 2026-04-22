@@ -266,13 +266,13 @@ parse._handleContentLine = function(line: string, state: any): void {
 
   let result;
   if (multiValue && structuredValue) {
-    value = parse._parseMultiValue(value, structuredValue, valueType, [], multiValue, state.designSet, structuredValue);
+    value = parse._parseMultiValue(value, structuredValue as unknown as string, valueType, [], multiValue as unknown as string, state.designSet, structuredValue);
     result = [ungroupedName, params, valueType, value];
   } else if (multiValue) {
     result = [ungroupedName, params, valueType];
-    parse._parseMultiValue(value, multiValue, valueType, result, null, state.designSet, false);
+    parse._parseMultiValue(value, multiValue as unknown as string, valueType, result, null, state.designSet, false);
   } else if (structuredValue) {
-    value = parse._parseMultiValue(value, structuredValue, valueType, [], null, state.designSet, structuredValue);
+    value = parse._parseMultiValue(value, structuredValue as unknown as string, valueType, [], null, state.designSet, structuredValue);
     result = [ungroupedName, params, valueType, value];
   } else {
     value = parse._parseValue(value, valueType, state.designSet, false);
@@ -317,7 +317,7 @@ parse._parseValue = function(value: string, type: string, designSet: any, struct
  */
 parse._parseParameters = function(line: string, start: number, designSet: any): [any, any, number] {
   let lastParam = start;
-  let pos = 0;
+  let pos: number | false = 0;
   let delim = PARAM_NAME_DELIMITER;
   let result = {};
   let name, lcname;
@@ -329,8 +329,8 @@ parse._parseParameters = function(line: string, start: number, designSet: any): 
   // check if " is used if so get value from "->"
   // then increment pos to find next ;
 
-  while ((pos as any !== false) &&
-         (pos = line.indexOf(delim, pos + 1)) !== -1) {
+  while (pos !== false &&
+         (pos = line.indexOf(delim, (pos as number) + 1)) !== -1) {
 
     name = line.slice(lastParam + 1, pos);
     if (name.length == 0) {

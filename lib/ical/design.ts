@@ -468,7 +468,7 @@ const icalValues = extend(commonValues, {
       let str = "";
       for (let [k, val] of Object.entries(data)) {
         if (k == "until") {
-          if (val.length > 10) {
+          if ((val as string).length > 10) {
             val = icalValues['date-time'].toICAL(val);
           } else {
             val = icalValues.date.toICAL(val);

@@ -53,7 +53,7 @@ class Time {
     days = _daysInMonth[month];
 
     if (month == 2) {
-      days += Time.isLeapYear(year);
+      days += Time.isLeapYear(year) ? 1 : 0;
     }
 
     return days;
@@ -135,9 +135,10 @@ class Time {
    * Returns a new ICAL.Time instance from a date string, e.g 2015-01-02.
    *
    * @param {String} aValue     The string to create from
+   * @param {Property=} _aProp  Unused, for API consistency with {@link fromString}
    * @return {Time}             The date/time instance
    */
-  static fromDateString(aValue: string): Time {
+  static fromDateString(aValue: string, _aProp?: import("./property").default): Time {
     // Dates should have no timezone.
     // Google likes to sometimes specify Z on dates
     // we specifically ignore that to avoid issues.
@@ -189,7 +190,7 @@ class Time {
       }
     }
 
-    const timeData = {
+    const timeData: import("./types").TimeInit = {
       year: strictParseInt(aValue.slice(0, 4)),
       month: strictParseInt(aValue.slice(5, 7)),
       day: strictParseInt(aValue.slice(8, 10)),
@@ -408,7 +409,7 @@ class Time {
    * @type {String}
    * @default "date-time"
    */
-  get icaltype() {
+  get icaltype(): string {
     return this.isDate ? 'date' : 'date-time';
   }
 

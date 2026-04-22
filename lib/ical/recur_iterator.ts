@@ -940,12 +940,12 @@ class RecurIterator {
    * @param {weekDay=} aWeekStart The week start weekday
    * @return [pos, numericDow] (eg: [1, 3]) numericDow is relative to aWeekStart
    */
-  ruleDayOfWeek(dow: string, aWeekStart?: any) {
+  ruleDayOfWeek(dow: string, aWeekStart?: any): [number, number] {
     let matches = dow.match(/([+-]?[0-9])?(MO|TU|WE|TH|FR|SA|SU)/);
     if (matches) {
-      let pos = parseInt(matches[1] || 0, 10);
-      dow = Recur.icalDayToNumericDay(matches[2], aWeekStart);
-      return [pos, dow];
+      let pos = parseInt(matches[1] || "0", 10);
+      let numericDow = Recur.icalDayToNumericDay(matches[2], aWeekStart);
+      return [pos, numericDow];
     } else {
       return [0, 0];
     }

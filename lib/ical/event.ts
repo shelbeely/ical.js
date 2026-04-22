@@ -118,7 +118,7 @@ class Event {
     // index RANGE=THISANDFUTURE exceptions so we can
     // look them up later in getOccurrenceDetails.
     if (obj.modifiesFuture()) {
-      let item = [
+      let item: [number, string] = [
         obj.recurrenceId.toUnixTime(), id
       ];
 

@@ -425,8 +425,8 @@ class Timezone {
       return offset.factor * (offset.hours * 3600 + offset.minutes * 60);
     }
 
-    function init_changes() {
-      let changebase = {};
+    function init_changes(): any {
+      let changebase: any = {};
       changebase.is_daylight = (aComponent.name == "daylight");
       changebase.utcOffset = convert_tzoffset(
         aComponent.getFirstProperty("tzoffsetto").getFirstValue()
@@ -481,10 +481,10 @@ class Timezone {
         changes.push(change);
       }
 
-      let rrule = aComponent.getFirstProperty("rrule");
+      let rruleProp = aComponent.getFirstProperty("rrule");
 
-      if (rrule) {
-        rrule = rrule.getFirstValue();
+      if (rruleProp) {
+        let rrule: any = rruleProp.getFirstValue();
         change = init_changes();
 
         if (rrule.until && rrule.until.zone == Timezone.utcTimezone) {

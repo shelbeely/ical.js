@@ -233,6 +233,7 @@ class Period {
    * @return {String}
    */
   toString(): string {
+    return this.start + "/" + (this.end || this.duration);
   }
 
   /**
