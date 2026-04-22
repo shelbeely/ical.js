@@ -7,6 +7,13 @@ import { strictParseInt, trunc, pad2 } from "./helpers";
 import Duration from "./duration";
 import design from "./design";
 
+/** @private */
+interface UtcOffsetData {
+  factor?: number;
+  hours?: number;
+  minutes?: number;
+}
+
 /**
  * This class represents the "utc-offset" value type, with various calculation and manipulation
  * methods.
@@ -22,7 +29,7 @@ class UtcOffset {
    */
   static fromString(aString: string): UtcOffset {
     // -05:00
-    let options: any = {};
+    let options: UtcOffsetData = {};
     //TODO: support seconds per rfc5545 ?
     options.factor = (aString[0] === '+') ? 1 : -1;
     options.hours = strictParseInt(aString.slice(1, 3));
@@ -51,7 +58,7 @@ class UtcOffset {
    * @param {Number=} aData.minutes The minutes in the utc offset
    * @param {Number=} aData.factor  The factor for the utc-offset, either -1 or 1
    */
-  constructor(aData?: any) {
+  constructor(aData?: UtcOffsetData) {
     this.fromData(aData);
   }
 

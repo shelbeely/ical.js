@@ -145,8 +145,8 @@ stringify.property = function(property: any[], designSet?: any, noFold?: boolean
   let valueType = property[2];
 
   let propDetails;
-  let multiValue = false;
-  let structuredValue = false;
+  let multiValue: string | false = false;
+  let structuredValue: string | false = false;
   let isDefault = false;
 
   if (jsName in designSet.property) {
@@ -186,15 +186,15 @@ stringify.property = function(property: any[], designSet?: any, noFold?: boolean
 
   if (multiValue && structuredValue) {
     line += stringify.multiValue(
-      property[3], structuredValue as unknown as string, valueType, multiValue as unknown as string, designSet, structuredValue
+      property[3], structuredValue, valueType, multiValue, designSet, structuredValue
     );
   } else if (multiValue) {
     line += stringify.multiValue(
-      property.slice(3), multiValue as unknown as string, valueType, null, designSet, false
+      property.slice(3), multiValue, valueType, null, designSet, false
     );
   } else if (structuredValue) {
     line += stringify.multiValue(
-      property[3], structuredValue as unknown as string, valueType, null, designSet, structuredValue
+      property[3], structuredValue, valueType, null, designSet, structuredValue
     );
   } else {
     line += stringify.value(property[3], valueType, designSet, false);

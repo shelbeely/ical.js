@@ -10,6 +10,20 @@ import { clone, binsearchInsert } from "./helpers";
 
 const OPTIONS = ["tzid", "location", "tznames", "latitude", "longitude"];
 
+/** @private */
+interface TimezoneChange {
+  is_daylight: boolean;
+  utcOffset: number;
+  prevUtcOffset: number;
+  year?: number;
+  month?: number;
+  day?: number;
+  hour?: number;
+  minute?: number;
+  second?: number;
+  isDate?: boolean;
+}
+
 /**
  * Timezone representation.
  *
@@ -411,7 +425,7 @@ class Timezone {
     }
   }
 
-  _expandComponent(aComponent: import("./component").default, aYear: number, changes: any[]): any[] | null {
+  _expandComponent(aComponent: import("./component").default, aYear: number, changes: TimezoneChange[]): TimezoneChange[] | null {
     if (!aComponent.hasProperty("dtstart") ||
         !aComponent.hasProperty("tzoffsetto") ||
         !aComponent.hasProperty("tzoffsetfrom")) {
@@ -419,23 +433,22 @@ class Timezone {
     }
 
     let dtstart = aComponent.getFirstProperty("dtstart").getFirstValue();
-    let change;
+    let change: TimezoneChange | null = null;
 
     function convert_tzoffset(offset) {
       return offset.factor * (offset.hours * 3600 + offset.minutes * 60);
     }
 
-    function init_changes(): any {
-      let changebase: any = {};
-      changebase.is_daylight = (aComponent.name == "daylight");
-      changebase.utcOffset = convert_tzoffset(
-        aComponent.getFirstProperty("tzoffsetto").getFirstValue()
-      );
-
-      changebase.prevUtcOffset = convert_tzoffset(
-        aComponent.getFirstProperty("tzoffsetfrom").getFirstValue()
-      );
-
+    function init_changes(): TimezoneChange {
+      let changebase: TimezoneChange = {
+        is_daylight: (aComponent.name == "daylight"),
+        utcOffset: convert_tzoffset(
+          aComponent.getFirstProperty("tzoffsetto").getFirstValue()
+        ),
+        prevUtcOffset: convert_tzoffset(
+          aComponent.getFirstProperty("tzoffsetfrom").getFirstValue()
+        ),
+      };
       return changebase;
     }
 

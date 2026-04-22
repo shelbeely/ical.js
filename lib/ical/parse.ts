@@ -209,8 +209,8 @@ parse._handleContentLine = function(line: string, state: any): void {
   }
 
   let valueType;
-  let multiValue = false;
-  let structuredValue = false;
+  let multiValue: string | false = false;
+  let structuredValue: string | false = false;
   let propertyDetails;
   let splitName;
   let ungroupedName;
@@ -266,13 +266,13 @@ parse._handleContentLine = function(line: string, state: any): void {
 
   let result;
   if (multiValue && structuredValue) {
-    value = parse._parseMultiValue(value, structuredValue as unknown as string, valueType, [], multiValue as unknown as string, state.designSet, structuredValue);
+    value = parse._parseMultiValue(value, structuredValue, valueType, [], multiValue, state.designSet, structuredValue);
     result = [ungroupedName, params, valueType, value];
   } else if (multiValue) {
     result = [ungroupedName, params, valueType];
-    parse._parseMultiValue(value, multiValue as unknown as string, valueType, result, null, state.designSet, false);
+    parse._parseMultiValue(value, multiValue, valueType, result, null, state.designSet, false);
   } else if (structuredValue) {
-    value = parse._parseMultiValue(value, structuredValue as unknown as string, valueType, [], null, state.designSet, structuredValue);
+    value = parse._parseMultiValue(value, structuredValue, valueType, [], null, state.designSet, structuredValue);
     result = [ungroupedName, params, valueType, value];
   } else {
     value = parse._parseValue(value, valueType, state.designSet, false);
