@@ -34,8 +34,8 @@ import { strictParseInt, trunc, pad2 } from "./helpers";
 */
 class Time {
   _time: any;
-  static _dowCache = {};
-  static _wnCache = {};
+  static _dowCache: Record<number, number> = {};
+  static _wnCache: Record<number, number> = {};
 
   /**
    * Returns the days in the given month
@@ -44,7 +44,7 @@ class Time {
    * @param {Number} year       The year to check
    * @return {Number}           The number of days in the month
    */
-  static daysInMonth(month, year) {
+  static daysInMonth(month: number, year: number): number {
     let _daysInMonth = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
     let days = 30;
 
@@ -65,7 +65,7 @@ class Time {
    * @param {Number} year       The year to check
    * @return {Boolean}          True, if the year is a leap year
    */
-  static isLeapYear(year) {
+  static isLeapYear(year: number): boolean {
     if (year <= 1752) {
       return ((year % 4) == 0);
     } else {
@@ -81,7 +81,7 @@ class Time {
    * @param {Number} aYear          The year to create the instance in
    * @return {Time}                 The created instance with the calculated date
    */
-  static fromDayOfYear(aDayOfYear, aYear) {
+  static fromDayOfYear(aDayOfYear: number, aYear: number): Time {
     let year = aYear;
     let doy = aDayOfYear;
     let tt = new Time();
@@ -122,7 +122,7 @@ class Time {
    * @param {String} str        The string to create from
    * @return {Time}             The date/time instance
    */
-  static fromStringv2(str) {
+  static fromStringv2(str: string): Time {
     return new Time({
       year: parseInt(str.slice(0, 4), 10),
       month: parseInt(str.slice(5, 7), 10),
@@ -137,7 +137,7 @@ class Time {
    * @param {String} aValue     The string to create from
    * @return {Time}             The date/time instance
    */
-  static fromDateString(aValue) {
+  static fromDateString(aValue: string): Time {
     // Dates should have no timezone.
     // Google likes to sometimes specify Z on dates
     // we specifically ignore that to avoid issues.
@@ -161,7 +161,7 @@ class Time {
    * @param {Property=} prop        The property the date belongs to
    * @return {Time}                 The date/time instance
    */
-  static fromDateTimeString(aValue, prop) {
+  static fromDateTimeString(aValue: string, prop?: import("./property").default): Time {
     if (aValue.length < 19) {
       throw new Error(
         'invalid date-time value: "' + aValue + '"'
@@ -217,7 +217,7 @@ class Time {
    * @param {Property=} prop        The property the date belongs to
    * @return {Time}                 The date/time instance
    */
-  static fromString(aValue, aProperty) {
+  static fromString(aValue: string, aProperty?: import("./property").default): Time {
     if (aValue.length > 10) {
       return Time.fromDateTimeString(aValue, aProperty);
     } else {
@@ -231,7 +231,7 @@ class Time {
    * @param {?Date} aDate             The Javascript Date to read, or null to reset
    * @param {Boolean} [useUTC=false]  If true, the UTC values of the date will be used
    */
-  static fromJSDate(aDate, useUTC) {
+  static fromJSDate(aDate: Date | null, useUTC?: boolean): Time {
     let tt = new Time();
     return tt.fromJSDate(aDate, useUTC);
   }
@@ -242,7 +242,7 @@ class Time {
    * @param {timeInit} aData          Time initialization
    * @param {Timezone=} aZone         Timezone this position occurs in
    */
-  static fromData = function fromData(aData, aZone) {
+  static fromData = function fromData(aData: import("./types").TimeInit | null, aZone?: import("./timezone").default): Time {
     let t = new Time();
     return t.fromData(aData, aZone);
   };
@@ -254,7 +254,7 @@ class Time {
    * ICAL.Time.fromJSDate(new Date(), true)
    * @return {Time}
    */
-  static now() {
+  static now(): Time {
     return Time.fromJSDate(new Date(), false);
   }
 
@@ -266,7 +266,7 @@ class Time {
    * @param {weekDay=} aWeekStart           The week start weekday, used for calculation.
    * @return {Time}                         The date on which week number 1 starts
    */
-  static weekOneStarts(aYear, aWeekStart) {
+  static weekOneStarts(aYear: number, aWeekStart?: number): Time {
     let t = Time.fromData({
       year: aYear,
       month: 1,
@@ -295,7 +295,7 @@ class Time {
    * @param {Number} yr           The year to retrieve the letter for
    * @return {String}             The dominical letter.
    */
-  static getDominicalLetter(yr) {
+  static getDominicalLetter(yr: number): string {
     let LTRS = "GFEDCBA";
     let dom = (yr + (yr / 4 | 0) + (yr / 400 | 0) - (yr / 100 | 0) - 1) % 7;
     let isLeap = Time.isLeapYear(yr);
@@ -370,7 +370,9 @@ class Time {
    * @param {timeInit} data           Time initialization
    * @param {Timezone} zone           timezone this position occurs in
    */
-  constructor(data, zone) {
+  wrappedJSObject!: this;
+
+  constructor(data?: import("./types").TimeInit | null, zone?: import("./timezone").default | null) {
     this.wrappedJSObject = this;
 
     /**
@@ -397,8 +399,8 @@ class Time {
    * @type {String}
    * @default "icaltime"
    */
-  icalclass = "icaltime";
-  _cachedUnixTime = null;
+  icalclass: string = "icaltime";
+  _cachedUnixTime: number | null = null;
 
   /**
    * The type name, to be used in the jCal object. This value may change and
@@ -414,7 +416,7 @@ class Time {
    * The timezone for this time.
    * @type {Timezone}
    */
-  zone = null;
+  zone: import("./timezone").default | null = null;
 
   /**
    * Internal uses to indicate that a change has been made and the next read
@@ -424,7 +426,9 @@ class Time {
    * @type {Boolean}
    * @private
    */
-  _pendingNormalization = false;
+  _pendingNormalization: boolean = false;
+
+  auto_normalize: boolean = false;
 
   /**
    * The year of this date.
@@ -548,7 +552,7 @@ class Time {
    *
    * @return {Time}              The cloned object
    */
-  clone() {
+  clone(): Time {
     return new Time(this._time, this.zone);
   }
 
@@ -571,7 +575,7 @@ class Time {
    * @param {Number} second           The second to set
    * @param {Timezone} timezone       The timezone to set
    */
-  resetTo(year, month, day, hour, minute, second, timezone) {
+  resetTo(year: number, month: number, day: number, hour: number, minute: number, second: number, timezone: import("./timezone").default): void {
     this.fromData({
       year: year,
       month: month,
@@ -589,7 +593,7 @@ class Time {
    * @param {?Date} aDate             The Javascript Date to read, or null to reset
    * @param {Boolean} [useUTC=false]  If true, the UTC values of the date will be used
    */
-  fromJSDate(aDate, useUTC) {
+  fromJSDate(aDate: Date | null, useUTC?: boolean): this {
     if (!aDate) {
       this.reset();
     } else {
@@ -621,7 +625,7 @@ class Time {
    * @param {timeInit} aData          Time initialization
    * @param {Timezone=} aZone         Timezone this position occurs in
    */
-  fromData(aData, aZone) {
+  fromData(aData: import("./types").TimeInit | null, aZone?: import("./timezone").default): this {
     if (aData) {
       for (let [key, value] of Object.entries(aData)) {
           // ical type cannot be set
@@ -666,7 +670,7 @@ class Time {
    *        The week start weekday, defaults to SUNDAY
    * @return {weekDay}
    */
-  dayOfWeek(aWeekStart) {
+  dayOfWeek(aWeekStart?: number): number {
     let firstDow = aWeekStart || Time.SUNDAY;
     let dowCacheKey = (this.year << 12) + (this.month << 8) + (this.day << 3) + firstDow;
     if (dowCacheKey in Time._dowCache) {
@@ -696,7 +700,7 @@ class Time {
    * Calculate the day of year.
    * @return {Number}
    */
-  dayOfYear() {
+  dayOfYear(): number {
     let is_leap = (Time.isLeapYear(this.year) ? 1 : 0);
     let diypm = Time.daysInYearPassedMonth;
     return diypm[is_leap][this.month - 1] + this.day;
@@ -711,7 +715,7 @@ class Time {
    *        The week start weekday, defaults to SUNDAY
    * @return {Time}      The start of the week (cloned)
    */
-  startOfWeek(aWeekStart) {
+  startOfWeek(aWeekStart?: number): Time {
     let firstDow = aWeekStart || Time.SUNDAY;
     let result = this.clone();
     result.day -= ((this.dayOfWeek() + 7 - firstDow) % 7);
@@ -731,7 +735,7 @@ class Time {
    *        The week start weekday, defaults to SUNDAY
    * @return {Time}      The end of the week (cloned)
    */
-  endOfWeek(aWeekStart) {
+  endOfWeek(aWeekStart?: number): Time {
     let firstDow = aWeekStart || Time.SUNDAY;
     let result = this.clone();
     result.day += (7 - this.dayOfWeek() + firstDow - Time.SUNDAY) % 7;
@@ -749,7 +753,7 @@ class Time {
    *
    * @return {Time}      The start of the month (cloned)
    */
-  startOfMonth() {
+  startOfMonth(): Time {
     let result = this.clone();
     result.day = 1;
     result.isDate = true;
@@ -766,7 +770,7 @@ class Time {
    *
    * @return {Time}      The end of the month (cloned)
    */
-  endOfMonth() {
+  endOfMonth(): Time {
     let result = this.clone();
     result.day = Time.daysInMonth(result.month, result.year);
     result.isDate = true;
@@ -783,7 +787,7 @@ class Time {
    *
    * @return {Time}      The start of the year (cloned)
    */
-  startOfYear() {
+  startOfYear(): Time {
     let result = this.clone();
     result.day = 1;
     result.month = 1;
@@ -801,7 +805,7 @@ class Time {
    *
    * @return {Time}      The end of the year (cloned)
    */
-  endOfYear() {
+  endOfYear(): Time {
     let result = this.clone();
     result.day = 31;
     result.month = 12;
@@ -820,7 +824,7 @@ class Time {
    *        The week start weekday, defaults to SUNDAY
    * @return {Number}     The calculated day of year
    */
-  startDoyWeek(aFirstDayOfWeek) {
+  startDoyWeek(aFirstDayOfWeek?: number): number {
     let firstDow = aFirstDayOfWeek || Time.SUNDAY;
     let delta = this.dayOfWeek() - firstDow;
     if (delta < 0) delta += 7;
@@ -834,7 +838,7 @@ class Time {
    * @param {Number} yr           The year to retrieve the letter for
    * @return {String}             The dominical letter.
    */
-  getDominicalLetter() {
+  getDominicalLetter(): string {
     return Time.getDominicalLetter(this.year);
   }
 
@@ -852,7 +856,7 @@ class Time {
    * @return {Number} numeric value indicating a day relative
    *                   to the current month of this time object
    */
-  nthWeekDay(aDayOfWeek, aPos) {
+  nthWeekDay(aDayOfWeek: number, aPos: number): number {
     let daysInMonth = Time.daysInMonth(this.month, this.year);
     let weekday;
     let pos = aPos;
@@ -934,7 +938,7 @@ class Time {
    * @param {Number} aPos                        Relative position
    * @return {Boolean}                           True, if it is the nth weekday
    */
-  isNthWeekDay(aDayOfWeek, aPos) {
+  isNthWeekDay(aDayOfWeek: number, aPos: number): boolean {
     let dow = this.dayOfWeek();
 
     if (aPos === 0 && dow === aDayOfWeek) {
@@ -965,7 +969,7 @@ class Time {
    * @param {weekDay} aWeekStart                  The weekday the week starts with
    * @return {Number}                             The ISO week number
    */
-  weekNumber(aWeekStart) {
+  weekNumber(aWeekStart: number): number {
     let wnCacheKey = (this.year << 12) + (this.month << 8) + (this.day << 3) + aWeekStart;
     if (wnCacheKey in Time._wnCache) {
       return Time._wnCache[wnCacheKey];
@@ -1003,7 +1007,7 @@ class Time {
    *
    * @param {Duration} aDuration         The duration to add
    */
-  addDuration(aDuration) {
+  addDuration(aDuration: import("./duration").default): void {
     let mult = (aDuration.isNegative ? -1 : 1);
 
     // because of the duration optimizations it is much
@@ -1037,7 +1041,7 @@ class Time {
    * @param {Time} aDate     The date to subtract
    * @return {Duration}      The difference as a duration
    */
-  subtractDate(aDate) {
+  subtractDate(aDate: Time): import("./duration").default {
     let unixTime = this.toUnixTime() + this.utcOffset();
     let other = aDate.toUnixTime() + aDate.utcOffset();
     return Duration.fromSeconds(unixTime - other);
@@ -1049,7 +1053,7 @@ class Time {
    * @param {Time} aDate  The date to subtract
    * @return {Duration}   The difference in duration
    */
-  subtractDateTz(aDate) {
+  subtractDateTz(aDate: Time): import("./duration").default {
     let unixTime = this.toUnixTime();
     let other = aDate.toUnixTime();
     return Duration.fromSeconds(unixTime - other);
@@ -1061,7 +1065,7 @@ class Time {
    * @param {Time|Period} aOther                  The instance to compare with
    * @return {Number}                             -1, 0 or 1 for less/equal/greater
    */
-  compare(other) {
+  compare(other: Time | import("./period").default): number {
     if (other instanceof Period) {
       return -1 * other.compare(this);
     } else {
@@ -1081,7 +1085,7 @@ class Time {
    * @param {Timezone} tz                 The timezone to compare in
    * @return {Number}                     -1, 0 or 1 for less/equal/greater
    */
-  compareDateOnlyTz(other, tz) {
+  compareDateOnlyTz(other: Time, tz: import("./timezone").default): number {
     let a = this.convertToZone(tz);
     let b = other.convertToZone(tz);
     let rc;
@@ -1100,7 +1104,7 @@ class Time {
    * @param {Timezone} zone      The zone to convert to
    * @return {Time}              The copy, converted to the zone
    */
-  convertToZone(zone) {
+  convertToZone(zone: import("./timezone").default): Time {
     let copy = this.clone();
     let zone_equals = (this.zone.tzid == zone.tzid);
 
@@ -1118,7 +1122,7 @@ class Time {
    *
    * @return {Number}     UTC offset in seconds
    */
-  utcOffset() {
+  utcOffset(): number {
     if (this.zone == Timezone.localTimezone ||
         this.zone == Timezone.utcTimezone) {
       return 0;
@@ -1132,7 +1136,7 @@ class Time {
    *
    * @return {String} ical date/date-time
    */
-  toICALString() {
+  toICALString(): string {
     let string = this.toString();
 
     if (string.length > 10) {
@@ -1147,7 +1151,7 @@ class Time {
    * (including : and - separators).
    * @return {String}
    */
-  toString() {
+  toString(): string {
     let result = this.year + '-' +
                  pad2(this.month) + '-' +
                  pad2(this.day);
@@ -1169,7 +1173,7 @@ class Time {
    * Converts the current instance to a Javascript date
    * @return {Date}
    */
-  toJSDate() {
+  toJSDate(): Date {
     if (this.zone == Timezone.localTimezone) {
       if (this.isDate) {
         return new Date(this.year, this.month - 1, this.day);
@@ -1182,7 +1186,7 @@ class Time {
     }
   }
 
-  _normalize() {
+  _normalize(): this {
     if (this._time.isDate) {
       this._time.hour = 0;
       this._time.minute = 0;
@@ -1203,7 +1207,7 @@ class Time {
    * @param {Number=} aTime           The time to adjust, defaults to the
    *                                    current instance.
    */
-  adjust(aExtraDays, aExtraHours, aExtraMinutes, aExtraSeconds, aTime) {
+  adjust(aExtraDays: number, aExtraHours: number, aExtraMinutes: number, aExtraSeconds: number, aTime?: import("./types").TimeInit): this {
 
     let minutesOverflow, hoursOverflow,
         daysOverflow = 0, yearsOverflow = 0;
@@ -1295,7 +1299,7 @@ class Time {
    *
    * @param {Number} seconds      The seconds to set up with
    */
-  fromUnixTime(seconds) {
+  fromUnixTime(seconds: number): void {
     this.zone = Timezone.utcTimezone;
     // We could use `fromJSDate` here, but this is about twice as fast.
     // We could also clone `epochTime` and use `adjust` for a more
@@ -1322,7 +1326,7 @@ class Time {
    *
    * @return {Number}         Seconds since 1970
    */
-  toUnixTime() {
+  toUnixTime(): number {
     if (this._cachedUnixTime !== null) {
       return this._cachedUnixTime;
     }
@@ -1358,7 +1362,7 @@ class Time {
    *
    * @return {Object}
    */
-  toJSON() {
+  toJSON(): Record<string, any> {
     let copy = [
       'year',
       'month',

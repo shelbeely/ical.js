@@ -26,7 +26,7 @@ const OPTIONS = ["tzid", "location", "tznames", "latitude", "longitude"];
  * @memberof ICAL
  */
 class Timezone {
-  static _compare_change_fn(a, b) {
+  static _compare_change_fn(a: any, b: any): number {
     if (a.year < b.year) return -1;
     else if (a.year > b.year) return 1;
 
@@ -56,7 +56,7 @@ class Timezone {
    * @param {Timezone} to_zone         The target zone to convert to
    * @return {Time}                    The converted date/time object
    */
-  static convert_time(tt, from_zone, to_zone) {
+  static convert_time(tt: import("./time").default, from_zone: Timezone, to_zone: Timezone): import("./time").default | null {
     if (tt.isDate ||
         from_zone.tzid == to_zone.tzid ||
         from_zone == Timezone.localTimezone ||
@@ -89,7 +89,7 @@ class Timezone {
    * @param {Number} aData.latitude  The latitude of the timezone
    * @param {Number} aData.longitude The longitude of the timezone
    */
-  static fromData(aData) {
+  static fromData(aData: any): Timezone {
     let tt = new Timezone();
     return tt.fromData(aData);
   }
@@ -135,7 +135,7 @@ class Timezone {
    * @param {Number} minutes    The extra amount of minutes
    * @param {Number} seconds    The extra amount of seconds
    */
-  static adjust_change(change, days, hours, minutes, seconds) {
+  static adjust_change(change: any, days: number, hours: number, minutes: number, seconds: number): any {
     return Time.prototype.adjust.call(
       change,
       days,
@@ -164,7 +164,10 @@ class Timezone {
    * @param {Number} data.latitude  The latitude of the timezone
    * @param {Number} data.longitude The longitude of the timezone
    */
-  constructor(data) {
+  wrappedJSObject!: this;
+  changes: any[] = [];
+
+  constructor(data?: any) {
     this.wrappedJSObject = this;
     this.fromData(data);
   }
@@ -174,37 +177,37 @@ class Timezone {
    * Timezone identifier
    * @type {String}
    */
-  tzid = "";
+  tzid: string = "";
 
   /**
    * Timezone location
    * @type {String}
    */
-  location = "";
+  location: string = "";
 
   /**
    * Alternative timezone name, for the string representation
    * @type {String}
    */
-  tznames = "";
+  tznames: string = "";
 
   /**
    * The primary latitude for the timezone.
    * @type {Number}
    */
-  latitude = 0.0;
+  latitude: number = 0.0;
 
   /**
    * The primary longitude for the timezone.
    * @type {Number}
    */
-  longitude = 0.0;
+  longitude: number = 0.0;
 
   /**
    * The vtimezone component for this timezone.
    * @type {Component}
    */
-  component = null;
+  component: import("./component").default | null = null;
 
   /**
    * The year this timezone has been expanded to. All timezone transition
@@ -213,7 +216,7 @@ class Timezone {
    * @private
    * @type {Number}
    */
-  expandedUntilYear = 0;
+  expandedUntilYear: number = 0;
 
   /**
    * The class identifier.
@@ -221,7 +224,7 @@ class Timezone {
    * @type {String}
    * @default "icaltimezone"
    */
-  icalclass = "icaltimezone";
+  icalclass: string = "icaltimezone";
 
   /**
    * Sets up the current instance using members from the passed data object.
@@ -238,7 +241,7 @@ class Timezone {
    * @param {Number} aData.latitude  The latitude of the timezone
    * @param {Number} aData.longitude The longitude of the timezone
    */
-  fromData(aData) {
+  fromData(aData?: any): this {
     this.expandedUntilYear = 0;
     this.changes = [];
 
@@ -284,7 +287,7 @@ class Timezone {
    * @param {Time} tt         The time to check for
    * @return {Number}         utc offset in seconds
    */
-  utcOffset(tt) {
+  utcOffset(tt: import("./time").default): number {
     if (this == Timezone.utcTimezone || this == Timezone.localTimezone) {
       return 0;
     }
@@ -364,7 +367,7 @@ class Timezone {
     return zone_change.utcOffset;
   }
 
-  _findNearbyChange(change) {
+  _findNearbyChange(change: any): number {
     // find the closest match
     let idx = binsearchInsert(
       this.changes,
@@ -379,7 +382,7 @@ class Timezone {
     return idx;
   }
 
-  _ensureCoverage(aYear) {
+  _ensureCoverage(aYear: number): void {
     if (Timezone._minimumExpansionYear == -1) {
       let today = Time.now();
       Timezone._minimumExpansionYear = today.year;
@@ -408,7 +411,7 @@ class Timezone {
     }
   }
 
-  _expandComponent(aComponent, aYear, changes) {
+  _expandComponent(aComponent: import("./component").default, aYear: number, changes: any[]): any[] | null {
     if (!aComponent.hasProperty("dtstart") ||
         !aComponent.hasProperty("tzoffsetto") ||
         !aComponent.hasProperty("tzoffsetfrom")) {
@@ -519,7 +522,7 @@ class Timezone {
    * The string representation of this timezone.
    * @return {String}
    */
-  toString() {
+  toString(): string {
     return (this.tznames ? this.tznames : this.tzid);
   }
 }
